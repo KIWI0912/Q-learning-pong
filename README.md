@@ -1,1 +1,74 @@
 # Q-learning-pong
+
+A Python implementation of the classic Pong game with Q-Learning AI, designed for educational and research purposes.
+
+## Features
+- **Q-Learning AI**: Implements a reinforcement learning agent to control the paddle.
+- **Customizable Game**: Easily adjust game parameters like paddle size, ball speed, and more.
+- **Real-time Visualization**: Watch the AI learn and improve in real-time.
+- **Performance Analytics**: Track and analyze the AI's learning progress.
+- **Modular Design**: Well-structured codebase for easy extension and experimentation.
+
+## Installation
+1. Clone the repository:
+   git clone https://github.com/your-username/q-learning-pong.git
+   cd q-learning-pong
+
+3. Install dependencies:
+   pip install -r requirements.txt
+
+4. Run the game:
+   python -m src.game.environment
+
+## Quick Start
+### Training the AI
+To train the Q-Learning agent:
+python -m src.agents.q_agent
+
+### Playing the Game
+To play the game manually:
+python -m src.game.environment --mode=manual
+
+### Visualizing Performance
+To visualize the AI's performance:
+python -m src.visualization.plotters
+
+## Project Structure
+q-learning-pong/
+├── README.md                # Project overview
+├── requirements.txt         # Python dependencies
+├── src/                     # Source code
+│   ├── game/                # Game logic
+│   ├── agents/              # AI agents
+│   └── visualization/       # Visualization tools
+├── notebooks/               # Jupyter notebooks for experimentation
+├── tests/                   # Unit tests
+├── docs/                    # Documentation
+└── models/                  # Trained models
+
+## Documentation
+- **[Design Documentation](docs/design_doc.md)**: Overview of the project architecture and components.
+- **[Algorithm Documentation](docs/algorithm_doc.md)**: Detailed explanation of the Q-Learning algorithm.
+- **[Performance Analysis](docs/performance_analysis.md)**: Analysis of the AI's learning performance.
+- **[User Manual](docs/user_manual.md)**: Step-by-step guide to using the project.
+
+## Contributing
+Contributions are welcome! Please follow these steps:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Submit a pull request with a detailed description of your changes.
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+- **Pygame**: For the game engine implementation.
+- **NumPy**: For efficient numerical computations.
+- **Matplotlib**: For performance visualization.
+- **OpenAI Gym**: For inspiration on environment design.
+
+## Contact
+For any questions or suggestions, please open an issue or contact the maintainer at [ckiwi912@gmail.com].
+
+
+Happy coding! 🎮
