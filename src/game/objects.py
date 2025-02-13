@@ -1,4 +1,3 @@
-```python
 class Ball:
     def __init__(self):
         self.x = random.randint(100, SCREEN_WIDTH - 100)
