@@ -10,30 +10,46 @@ A Python implementation of the classic Pong game with Q-Learning AI, designed fo
 - **Modular Design**: Well-structured codebase for easy extension and experimentation.
 
 ## Installation
+
 1. Clone the repository:
+   ```bash
    git clone https://github.com/your-username/q-learning-pong.git
    cd q-learning-pong
+   ```
 
-3. Install dependencies:
+2. Install dependencies:
+   ```bash
    pip install -r requirements.txt
+   ```
 
-4. Run the game:
+3. Run the game:
+   ```bash
    python -m src.game.environment
+   ```
 
 ## Quick Start
+
 ### Training the AI
 To train the Q-Learning agent:
+```bash
 python -m src.agents.q_agent
+```
 
 ### Playing the Game
 To play the game manually:
+```bash
 python -m src.game.environment --mode=manual
+```
 
 ### Visualizing Performance
 To visualize the AI's performance:
+```bash
 python -m src.visualization.plotters
+```
 
 ## Project Structure
+
+```
 q-learning-pong/
 ├── README.md                # Project overview
 ├── requirements.txt         # Python dependencies
@@ -45,6 +61,7 @@ q-learning-pong/
 ├── tests/                   # Unit tests
 ├── docs/                    # Documentation
 └── models/                  # Trained models
+```
 
 ## Documentation
 - **[Design Documentation](docs/design_doc.md)**: Overview of the project architecture and components.
