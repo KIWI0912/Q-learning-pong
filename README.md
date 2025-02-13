@@ -13,7 +13,7 @@ A Python implementation of the classic Pong game with Q-Learning AI, designed fo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/q-learning-pong.git
+   git clone https://github.com/your-username/Q-learning-pong.git
    cd q-learning-pong
    ```
 
