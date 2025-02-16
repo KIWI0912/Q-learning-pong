@@ -13,7 +13,7 @@ A Python implementation of the classic Pong game with Q-Learning AI, designed fo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/KIWI0912/q-learning-paddle-game.git
+   git clone https://github.com/KIWI0912/Q-learning-pong.git
    cd q-learning-pong
    ```
 
