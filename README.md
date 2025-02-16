@@ -87,5 +87,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 For any questions or suggestions, please open an issue or contact the maintainer at [ckiwi912@gmail.com].
 
+## 这是一个可以直接打开并且运行的完整文件
+```bash
+python -m ball
+```
+
 
 Happy coding! 🎮
