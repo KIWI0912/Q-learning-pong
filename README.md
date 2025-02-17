@@ -41,12 +41,6 @@ To play the game manually:
 python -m src.game.environment --mode=manual
 ```
 
-### Visualizing Performance
-To visualize the AI's performance:
-```bash
-python -m src.visualization.plotters
-```
-
 ## Project Structure
 
 ```
