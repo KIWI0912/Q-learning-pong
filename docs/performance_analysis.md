@@ -26,6 +26,5 @@ plt.savefig('training_curve.png', dpi=300)  # Save high-resolution image
 | Avg Reward/Action       | 1.25                | Reward per action        |
 | Invalid Action Penalty  | 8.7%                | Repeated useless moves   |
 
-![Training Curve Example](training_curve.png)  
-*(This plot will be generated after running the code)*
+
 
