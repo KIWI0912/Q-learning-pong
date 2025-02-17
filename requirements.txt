@@ -4,7 +4,7 @@ pygame==2.5.2
 numpy==1.26.4
 
 # Optional Visualization
-matplotlib==3.8.2  # 可注释掉若不需要
+matplotlib==3.8.2
 
 # Build Requirements
 setuptools==68.2.2
