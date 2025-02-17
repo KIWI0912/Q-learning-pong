@@ -38,7 +38,7 @@ python -m src.agents.q_agent
 ### Playing the Game
 To play the game manually:
 ```bash
-python -m src.game.environment --mode=manual
+python -m src.agents.environment
 ```
 
 ## Project Structure
@@ -49,7 +49,7 @@ q-learning-pong/
 ├── requirements.txt         # Python dependencies
 ├── src/                     # Source code
 │   ├── game/                # Game logic
-│   ├── agents/              # AI agents
+│   └── agents/              # AI agents
 └── docs/                    # Documentation
 ```
 
