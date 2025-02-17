@@ -48,7 +48,6 @@ q-learning-pong/
 ```
 
 ## Documentation
-- **[Design Documentation](docs/design_doc.md)**: Overview of the project architecture and components.
 - **[Algorithm Documentation](docs/algorithm_doc.md)**: Detailed explanation of the Q-Learning algorithm.
 - **[Performance Analysis](docs/performance_analysis.md)**: Analysis of the AI's learning performance.
 - **[User Manual](docs/user_manual.md)**: Step-by-step guide to using the project.
