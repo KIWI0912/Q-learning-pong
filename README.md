@@ -43,7 +43,8 @@ q-learning-pong/
 ├── requirements.txt         # Python dependencies
 ├── src/                     # Source code
 │   ├── game/                # Game logic
-│   └── manual/              # Manual operation
+│   ├── manual/              # Manual operation
+│   └── statistics/          # Count game time and score
 └── docs/                    # Documentation
 ```
 
@@ -51,6 +52,7 @@ q-learning-pong/
 - **[Algorithm Documentation](docs/algorithm_doc.md)**: Detailed explanation of the Q-Learning algorithm.
 - **[Performance Analysis](docs/performance_analysis.md)**: Analysis of the AI's learning performance.
 - **[User Manual](docs/user_manual.md)**: Step-by-step guide to using the project.
+  💡If you need to know how to generate statistical tables and pictures, please click on this document💡
 
 ## Contributing
 Contributions are welcome! Please follow these steps:
