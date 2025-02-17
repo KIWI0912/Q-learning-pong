@@ -11,7 +11,20 @@
    ```bash
    pip install -r requirements.txt
    ```
+   
+3. **Run the game have statistical function**
+   ```bash
+   python -m src.statistical.withcalculate
+   ```
+   💡Before you run this code, please to change the file path💡
+   
+5. **Generate statistical pictures and data**
+   ```bash
+   python -m src.statistical.pyplot
+   ```
+   💡Before you run this code, please to change the file path💡
 
+   
 ## 🎮 Controls  
 ### Game Interface  
 | Key          | Function                  |
