@@ -1,29 +1,14 @@
-# Core Dependencies (ARM64-optimized)
-pygame==2.5.0        # Prebuilt with SDL2 support for M1/M2
-numpy==1.26.4        # ARM64-accelerated via OpenBLAS
-matplotlib==3.8.0    # Python 3.11 compatibility
+# requirements.txt
+# Core Game Engine
+pygame==2.5.2        # 主游戏引擎
+numpy==1.26.4        # 碰撞检测和数学运算
 
-# Machine Learning Stack
-pandas==2.0.3        # Arrow-backed DataFrame support
-torch==2.0.0         # MPS backend for Metal GPU acceleration
-    # Install command: pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+# Visualization
+matplotlib==3.8.2    # (可选) 用于后期数据分析
 
-# Development Tools
-pytest==7.4.3        # Async test support
-jupyter==1.0.0       # Core notebook package
-black==23.9.1        # Modern code formatting
-flake8==6.0.0        # Enhanced linting
+# Python Version
+python>=3.12         # 需要Python 3.12+
 
-# System Constraints
---only-binary :all:  # Force precompiled binaries
---use-pep517         # Modern build system
-
-# Installation Procedure
-# 1. Create fresh environment
-# python -m venv .venv && source .venv/bin/activate
-
-# 2. Upgrade build tools
-# pip install -U pip==23.3.1 setuptools==68.2.2 wheel==0.41.2
-
-# 3. Install with dependency resolution
-# pip install -r requirements.txt
+# 平台特定优化 (macOS Intel)
+--no-binary numpy    # 强制源码编译优化性能
+--use-pep517         # 确保现代构建系统
