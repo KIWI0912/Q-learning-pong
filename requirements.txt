@@ -1,14 +1,11 @@
 # requirements.txt
 # Core Game Engine
-pygame==2.5.2        # 主游戏引擎
-numpy==1.26.4        # 碰撞检测和数学运算
+pygame==2.5.2
+numpy==1.26.4
 
-# Visualization
-matplotlib==3.8.2    # (可选) 用于后期数据分析
+# Optional Visualization
+matplotlib==3.8.2  # 可注释掉若不需要
 
-# Python Version
-python>=3.12         # 需要Python 3.12+
-
-# 平台特定优化 (macOS Intel)
---no-binary numpy    # 强制源码编译优化性能
---use-pep517         # 确保现代构建系统
+# Build Requirements
+setuptools==68.2.2
+wheel==0.42.0
