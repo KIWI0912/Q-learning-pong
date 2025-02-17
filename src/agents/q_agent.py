@@ -1,31 +1,69 @@
 import numpy as np
-import random
+from ..game.environment import PongEnvironment
 
-class QAgent:
-    def __init__(self, actions, alpha=0.1, gamma=0.9, epsilon=0.1):
-        self.actions = actions
-        self.alpha = alpha  # Learning rate
-        self.gamma = gamma  # Discount factor
-        self.epsilon = epsilon  # Exploration rate
-        self.Q = {}  # Q-table
-
+class QLearningAgent:
+    def __init__(self):
+        self.env = PongEnvironment(mode="auto")
+        self.q_table = {}  # 状态动作价值表
+        self.learning_rate = 0.1
+        self.discount_factor = 0.95
+        self.epsilon = 0.1
+    
+    def get_state(self, ball_pos, paddle_pos):
+        # 简化状态空间
+        ball_x = int(ball_pos[0] / 100)
+        ball_y = int(ball_pos[1] / 100)
+        paddle_y = int(paddle_pos[1] / 100)
+        return (ball_x, ball_y, paddle_y)
+    
     def get_action(self, state):
-        if random.uniform(0, 1) < self.epsilon:
-            return random.choice(self.actions)  # Explore
-        else:
-            return self.get_best_action(state)  # Exploit
+        if np.random.random() < self.epsilon:
+            return np.random.choice([-1, 0, 1])  # 随机探索
+        
+        if state not in self.q_table:
+            self.q_table[state] = {-1: 0, 0: 0, 1: 0}
+        
+        return max(self.q_table[state].items(), key=lambda x: x[1])[0]
+    
+    def train(self, episodes=1000):
+        for episode in range(episodes):
+            state = self.get_state(self.env.ball_pos, self.env.paddle_pos)
+            total_reward = 0
+            
+            while True:
+                action = self.get_action(state)
+                
+                # 执行动作
+                reward = self.env.step(action)
+                next_state = self.get_state(self.env.ball_pos, self.env.paddle_pos)
+                
+                # Q-learning更新
+                if state not in self.q_table:
+                    self.q_table[state] = {-1: 0, 0: 0, 1: 0}
+                if next_state not in self.q_table:
+                    self.q_table[next_state] = {-1: 0, 0: 0, 1: 0}
+                
+                old_value = self.q_table[state][action]
+                next_max = max(self.q_table[next_state].values())
+                
+                new_value = (1 - self.learning_rate) * old_value + \
+                           self.learning_rate * (reward + self.discount_factor * next_max)
+                
+                self.q_table[state][action] = new_value
+                
+                total_reward += reward
+                state = next_state
+                
+                if self.env.done:
+                    break
+            
+            if episode % 100 == 0:
+                print(f"Episode {episode}, Total Reward: {total_reward}")
 
-    def get_best_action(self, state):
-        if state not in self.Q:
-            self.Q[state] = np.zeros(len(self.actions))
-        return np.argmax(self.Q[state])
+def main():
+    agent = QLearningAgent()
+    print("Starting Q-learning training...")
+    agent.train()
 
-    def update(self, state, action, reward, next_state):
-        if state not in self.Q:
-            self.Q[state] = np.zeros(len(self.actions))
-        if next_state not in self.Q:
-            self.Q[next_state] = np.zeros(len(self.actions))
-
-        # Q-learning update rule
-        best_next_action = np.argmax(self.Q[next_state])
-        self.Q[state][action] += self.alpha * (reward + self.gamma * self.Q[next_state][best_next_action] - self.Q[state][action])
+if __name__ == "__main__":
+    main()
