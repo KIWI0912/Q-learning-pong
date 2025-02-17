@@ -3,8 +3,8 @@
 ## 🛠️ Installation Guide  
 1. **Clone Repository**  
    ```bash
-   git clone https://github.com/YOURNAME/q-learning-paddle-game.git
-   cd q-learning-paddle-game
+   git clone https://github.com/KIWI0912/q-learning-pong.git
+   cd q-learning-pong
    ```
 
 2. **Install Dependencies**  
@@ -16,10 +16,9 @@
 ### Game Interface  
 | Key          | Function                  |
 |--------------|---------------------------|
-| `Enter`      | Start game/skip intro     |
-| `R`          | Reset level               |
+| `Enter`      | Start game                |
+| `R`          | Return to menu            |
 | `Esc`        | Quit game                 |
-| `F1`         | Toggle debug info         |
 
 
 **Q: Why is the AI unstable?**  
