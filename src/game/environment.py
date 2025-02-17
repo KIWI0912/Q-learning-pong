@@ -17,6 +17,16 @@ PADDLE_COLOR = (255, 182, 193)      # Light pink
 TEXT_COLOR = (255, 20, 147)         # Deep pink
 REWARD_COLOR = (255, 255, 0)        # Yellow for rewards
 
+# Reward colors
+REWARD_COLORS = {
+    "score": (255, 255, 0),        # 黄色
+    "paddle_extend": (0, 255, 0),   # 绿色
+    "extra_ball": (255, 165, 0),    # 橙色
+    "speed_boost": (0, 191, 255),   # 深天蓝
+    "multi_score": (255, 0, 255),   # 紫色
+    "shield": (192, 192, 192)       # 银色
+}
+
 # Fonts
 font = pygame.font.SysFont("Arial", 36)
 small_font = pygame.font.SysFont("Arial", 24)
@@ -30,10 +40,11 @@ balls = []
 paddle = {}
 rewards = []
 reward_timer = 0
-reward_move_interval = 10000  # Rewards change every 10 seconds (in milliseconds)
+reward_move_interval = 8000  # Rewards change every 8 seconds
 time_elapsed = 0
 game_timer = 60  # Countdown timer in seconds
 INITIAL_PADDLE_WIDTH = 100
+score_multiplier = 1
 
 # Q-learning parameters
 alpha = 0.1  # Learning rate
@@ -41,29 +52,48 @@ gamma = 0.9  # Discount factor
 epsilon = 0.1  # Exploration rate
 Q = {}  # Q-table
 
+# Reward types
+REWARD_TYPES = [
+    "score",           # 基础得分奖励
+    "paddle_extend",   # 扩展挡板
+    "extra_ball",      # 额外球
+    "speed_boost",     # 速度提升
+    "multi_score",     # 双倍得分
+    "shield",          # 临时护盾
+]
+
 # New variables for reward collision penalty
 last_reward_collision_timer = 0
 missed_reward_penalty = 5000
 
 def init_ball():
     return {
-        "x": random.randint(100, SCREEN_WIDTH - 100), 
-        "y": 50, 
-        "vx": random.choice([-4, -3, 3, 4]), 
-        "vy": random.choice([3, 4, 5]), 
+        "x": random.randint(100, SCREEN_WIDTH - 100),
+        "y": 50,
+        "vx": random.choice([-4, -3, 3, 4]),
+        "vy": random.choice([3, 4, 5]),
         "radius": 10
     }
 
 def init_paddle():
-    return {"x": SCREEN_WIDTH // 2 - 50, "width": INITIAL_PADDLE_WIDTH, "height": 10, "speed": 5}
+    return {
+        "x": SCREEN_WIDTH // 2 - INITIAL_PADDLE_WIDTH // 2,
+        "width": INITIAL_PADDLE_WIDTH,
+        "height": 10,
+        "speed": 5,
+        "shield": False
+    }
 
 def init_reward():
+    reward_type = random.choice(REWARD_TYPES)
     return {
         "x": random.randint(100, SCREEN_WIDTH - 130),
         "y": random.randint(100, SCREEN_HEIGHT // 2),
         "size": random.randint(20, 40),
         "active": True,
-        "type": random.choice(["score", "paddle_extend", "extra_ball"])
+        "type": reward_type,
+        "color": REWARD_COLORS.get(reward_type, REWARD_COLOR),
+        "creation_time": pygame.time.get_ticks()
     }
 
 def get_state(balls, paddle):
@@ -74,7 +104,7 @@ def get_state(balls, paddle):
     if not dangerous_balls:
         dangerous_balls = balls
     
-    closest_ball = min(dangerous_balls, 
+    closest_ball = min(dangerous_balls,
                       key=lambda b: (SCREEN_HEIGHT - b["y"]) / abs(b["vy"]) if b["vy"] != 0 else float('inf'))
     
     ball_x = int(closest_ball["x"] // 50)
@@ -175,8 +205,8 @@ def choose_action(state, balls, paddle):
             valid_actions.remove(1)
         return random.choice(valid_actions)
     else:
-        valid_actions = {a: Q[state][a] for a in [-1, 0, 1] if 
-                        (a != -1 or paddle["x"] > 0) and 
+        valid_actions = {a: Q[state][a] for a in [-1, 0, 1] if
+                        (a != -1 or paddle["x"] > 0) and
                         (a != 1 or paddle["x"] + paddle["width"] < SCREEN_WIDTH)}
         return max(valid_actions, key=valid_actions.get)
 
@@ -190,7 +220,8 @@ def update_q_table(state, action, reward, next_state):
     max_next_q = max(Q[next_state].values())
     Q[state][action] = current_q + alpha * (reward + gamma * max_next_q - current_q)
 
-def draw_star(surface, x, y, size, color):
+def draw_star(surface, x, y, size, color, reward_type):
+    star_color = REWARD_COLORS.get(reward_type, color)
     points = []
     for i in range(10):
         angle = i * (360 / 10) - 90
@@ -198,14 +229,15 @@ def draw_star(surface, x, y, size, color):
         x_point = x + radius * np.cos(np.radians(angle))
         y_point = y + radius * np.sin(np.radians(angle))
         points.append((x_point, y_point))
-    pygame.draw.polygon(surface, color, points)
+    pygame.draw.polygon(surface, star_color, points)
 
 def move_rewards():
     for reward in rewards:
         reward["x"] = random.randint(100, SCREEN_WIDTH - 130)
         reward["y"] = random.randint(100, SCREEN_HEIGHT // 2)
         reward["size"] = random.randint(20, 40)
-        reward["type"] = random.choice(["score", "paddle_extend", "extra_ball"])
+        reward["type"] = random.choice(REWARD_TYPES)
+        reward["color"] = REWARD_COLORS.get(reward["type"], REWARD_COLOR)
         reward["active"] = True
 
 def ball_reward_collision(ball, reward):
@@ -215,22 +247,64 @@ def ball_reward_collision(ball, reward):
         return reward["type"]
     return None
 
+def handle_reward_collision(ball, reward, paddle):
+    global score, score_multiplier
+    if reward_type := ball_reward_collision(ball, reward):
+        last_reward_collision_timer = pygame.time.get_ticks()
+        
+        if reward_type == "score":
+            score += 30 * score_multiplier
+        elif reward_type == "paddle_extend":
+            paddle["width"] = min(paddle["width"] + 40, SCREEN_WIDTH // 2)
+            pygame.time.set_timer(pygame.USEREVENT + 1, 10000)
+        elif reward_type == "extra_ball":
+            for _ in range(2):
+                balls.append(init_ball())
+        elif reward_type == "speed_boost":
+            paddle["speed"] = 8
+            pygame.time.set_timer(pygame.USEREVENT + 2, 8000)
+        elif reward_type == "multi_score":
+            score += 50
+            score_multiplier = 2
+            pygame.time.set_timer(pygame.USEREVENT + 3, 30000)
+        elif reward_type == "shield":
+            paddle["shield"] = True
+            pygame.time.set_timer(pygame.USEREVENT + 4, 15000)
+
 def draw_game():
     screen.fill(BACKGROUND_COLOR)
     
     for ball in balls:
         pygame.draw.circle(screen, BALL_COLOR, (int(ball["x"]), int(ball["y"])), ball["radius"])
     
-    pygame.draw.rect(screen, PADDLE_COLOR, (int(paddle["x"]), SCREEN_HEIGHT - paddle["height"], 
-                                          paddle["width"], paddle["height"]))
+    # Draw paddle (with shield effect if active)
+    paddle_color = (0, 255, 255) if paddle["shield"] else PADDLE_COLOR
+    pygame.draw.rect(screen, paddle_color,
+                    (int(paddle["x"]), SCREEN_HEIGHT - paddle["height"],
+                     paddle["width"], paddle["height"]))
     
     for reward in rewards:
         if reward["active"]:
-            draw_star(screen, reward["x"] + reward["size"] // 2, 
-                     reward["y"] + reward["size"] // 2, reward["size"] // 2, REWARD_COLOR)
+            draw_star(screen,
+                     reward["x"] + reward["size"] // 2,
+                     reward["y"] + reward["size"] // 2,
+                     reward["size"] // 2,
+                     reward["color"],
+                     reward["type"])
+            
+            # Display reward type
+            reward_text = small_font.render(reward["type"].replace("_", " ").title(),
+                                          True, TEXT_COLOR)
+            screen.blit(reward_text,
+                       (reward["x"], reward["y"] - 20))
     
+    # Display score and multiplier
     score_text = small_font.render(f"Score: {score}", True, TEXT_COLOR)
     screen.blit(score_text, (10, 10))
+    
+    if score_multiplier > 1:
+        multiplier_text = small_font.render(f"x{score_multiplier}", True, TEXT_COLOR)
+        screen.blit(multiplier_text, (10, 40))
     
     timer_text = small_font.render(f"Time: {int(game_timer - time_elapsed)}", True, TEXT_COLOR)
     screen.blit(timer_text, (SCREEN_WIDTH - 150, 10))
@@ -240,6 +314,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.USEREVENT + 1:
+            paddle["width"] = INITIAL_PADDLE_WIDTH
+        elif event.type == pygame.USEREVENT + 2:
+            paddle["speed"] = 5
+        elif event.type == pygame.USEREVENT + 3:
+            score_multiplier = 1
+        elif event.type == pygame.USEREVENT + 4:
+            paddle["shield"] = False
 
     if current_screen == "menu":
         screen.fill(BACKGROUND_COLOR)
@@ -254,6 +336,7 @@ while running:
         if keys[pygame.K_RETURN]:
             current_screen = "game"
             score = 0
+            score_multiplier = 1
             balls = [init_ball()]
             paddle = init_paddle()
             rewards = [init_reward() for _ in range(5)]
@@ -276,26 +359,21 @@ while running:
             if ball["y"] <= 0:
                 ball["vy"] = -ball["vy"]
             if ball["y"] >= SCREEN_HEIGHT:
-                balls.remove(ball)
-                if len(balls) == 0:
-                    score -= 10
-                    balls.append(init_ball())
+                if not paddle["shield"]:
+                    balls.remove(ball)
+                    if len(balls) == 0:
+                        score -= 10
+                        balls.append(init_ball())
+                else:
+                    ball["vy"] = -ball["vy"]
 
             if paddle["x"] <= ball["x"] <= paddle["x"] + paddle["width"] and \
                ball["y"] + ball["radius"] >= SCREEN_HEIGHT - paddle["height"]:
                 ball["vy"] = -abs(ball["vy"])
-                score += 5
+                score += 5 * score_multiplier
 
             for reward in rewards:
-                reward_type = ball_reward_collision(ball, reward)
-                if reward_type:
-                    last_reward_collision_timer = pygame.time.get_ticks()
-                    if reward_type == "score":
-                        score += 25
-                    elif reward_type == "paddle_extend":
-                        paddle["width"] += 30
-                    elif reward_type == "extra_ball":
-                        balls.append(init_ball())
+                handle_reward_collision(ball, reward, paddle)
 
         if pygame.time.get_ticks() - last_reward_collision_timer >= missed_reward_penalty:
             score -= 10
