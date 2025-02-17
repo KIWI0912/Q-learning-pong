@@ -27,18 +27,12 @@ A Python implementation of the classic Pong game with Q-Learning AI, designed fo
    python -m src.game.environment
    ```
 
-## Quick Start
-
-### Training the AI
-To train the Q-Learning agent:
-```bash
-python -m src.agents.q_agent
-```
+## Have fun 🎉
 
 ### Playing the Game
 To play the game manually:
 ```bash
-python -m src.agents.environment
+python -m src.manual.environment
 ```
 
 ## Project Structure
@@ -49,7 +43,7 @@ q-learning-pong/
 ├── requirements.txt         # Python dependencies
 ├── src/                     # Source code
 │   ├── game/                # Game logic
-│   └── agents/              # AI agents
+│   └── manual/              # Manual operation
 └── docs/                    # Documentation
 ```
 
