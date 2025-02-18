@@ -14,7 +14,7 @@ game_stats = {
 
 def save_game_stats():
     try:
-        with open('/Users/YOURNAME/Desktop/game_stats.csv', 'w', newline='') as f:
+        with open('/Users/stella/Desktop/game_stats.csv', 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(['time', 'score'])
             
@@ -367,16 +367,20 @@ while running:
         screen.fill(BACKGROUND_COLOR)
         end_text = font.render("Time's Up!", True, TEXT_COLOR)
         score_text = small_font.render(f"Your Score: {score}", True, TEXT_COLOR)
-        menu_text = small_font.render("Press ENTER to return to Menu", True, TEXT_COLOR)
+        menu_text = small_font.render("Press R to Return to Menu", True, TEXT_COLOR)
         exit_text = small_font.render("Press ESC to Exit", True, TEXT_COLOR)
+
         screen.blit(end_text, (SCREEN_WIDTH // 2 - end_text.get_width() // 2, 200))
         screen.blit(score_text, (SCREEN_WIDTH // 2 - score_text.get_width() // 2, 300))
         screen.blit(menu_text, (SCREEN_WIDTH // 2 - menu_text.get_width() // 2, 400))
         screen.blit(exit_text, (SCREEN_WIDTH // 2 - exit_text.get_width() // 2, 450))
-        
+
+        # Processing end interface input
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RETURN]:
+        if keys[pygame.K_r]:
             current_screen = "menu"
+        elif keys[pygame.K_ESCAPE]:
+            running = False
 
     pygame.display.flip()
     clock.tick(60)
